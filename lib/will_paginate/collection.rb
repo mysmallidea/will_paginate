@@ -40,6 +40,7 @@ module WillPaginate
   #   
   #   # now use WillPaginate::Collection directly or subclass it
   class Collection < Array
+    require 'active_support'
     attr_reader :current_page, :per_page, :total_entries, :total_pages
 
     # Arguments to the constructor are the current page number, per-page limit
@@ -141,5 +142,14 @@ module WillPaginate
 
       result
     end
+    
+    def to_xml_with_collection_type(options = {})
+      to_xml_without_collection_type(options) do |xml|
+        xml.tag!(:current_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[current_page.class.name]}, current_page)
+        xml.tag!(:per_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[per_page.class.name]}, per_page)
+        xml.tag!(:total_entries, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[total_entries.class.name]}, total_entries)
+      end.sub(%{type="array"}, %{type="collection"})
+    end
+    alias_method_chain :to_xml, :collection_type
   end
 end
