@@ -50,6 +50,7 @@ module WillPaginate
     end
     
     def enable_activeresource
+      return if ActiveResource::Base.respond_to? :instantiate_collection_with_collection      
       require 'will_paginate/deserializer'
       ActiveResource::Base.class_eval { include Deserializer }
     end
