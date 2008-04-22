@@ -13,6 +13,7 @@ module WillPaginate
     def enable
       enable_actionpack
       enable_activerecord
+      enable_activeresource
     end
     
     # mixes in WillPaginate::ViewHelpers in ActionView::Base
@@ -46,6 +47,11 @@ module WillPaginate
           alias_method_chain :method_missing, :paginate
         end
       end
+    end
+    
+    def enable_activeresource
+      require 'will_paginate/deserializer'
+      ActiveResource::Base.class_eval { include Deserializer }
     end
 
     # Enable named_scope, a feature of Rails 2.1, even if you have older Rails
