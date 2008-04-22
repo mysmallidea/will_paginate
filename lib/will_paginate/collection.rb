@@ -144,12 +144,17 @@ module WillPaginate
     end
     
     def to_xml_with_collection_type(options = {})
-      to_xml_without_collection_type(options) do |xml|
+      serializeable_collection.to_xml_without_collection_type(options) do |xml|
         xml.tag!(:current_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[current_page.class.name]}, current_page)
         xml.tag!(:per_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[per_page.class.name]}, per_page)
         xml.tag!(:total_entries, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[total_entries.class.name]}, total_entries)
       end.sub(%{type="array"}, %{type="collection"})
     end
     alias_method_chain :to_xml, :collection_type
+    
+    def serializeable_collection
+      # Ugly hack because to_xml will not yield the XML Builder object when empty?
+      empty? ? returning(self.clone) { |c| c.instance_eval {|i| def empty?; false; end } } : self
+    end
   end
 end
