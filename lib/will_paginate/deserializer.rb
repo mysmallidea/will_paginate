@@ -12,7 +12,7 @@ module WillPaginate
       def instantiate_collection_with_collection(collection, prefix_options = {})
         if collection["type"] == "collection"
           collectables = collection.values.find{|c| c.is_a?(Hash) || c.is_a?(Array) }
-          collectables = [collectables] unless collectables.kind_of?(Array)
+          collectables = [collectables].compact unless collectables.kind_of?(Array)
           instantiated_collection = instantiate_collection_without_collection(collectables, prefix_options = {}).paginate(
             :page => collection["current_page"], 
             :per_page => collection["per_page"], 
