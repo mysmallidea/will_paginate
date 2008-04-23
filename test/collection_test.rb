@@ -126,7 +126,7 @@ class ArrayPaginationTest < Test::Unit::TestCase
   end
   
   def test_to_xml_with_blank_collection_type
-    collection = [].paginate(:page => 1, :per_page => 5)
+    collection = create(1, 5, 0)
     assert_select_xml collection.to_xml(:dasherize => false), "nil_classes[type=?]", "collection" do
       assert_select_xml "current_page[type=?]", "integer", "1"
       assert_select_xml "per_page[type=?]", "integer", "5"
@@ -135,11 +135,11 @@ class ArrayPaginationTest < Test::Unit::TestCase
   end
   
   def test_to_xml_with_filled_collection_type
-    collection = [{:word => "up"}].paginate(:page => 1, :per_page => 5)
+    collection = create(1, 5, 1337) {|pager| pager.replace([{:word => "up"}]) }
     assert_select_xml collection.to_xml(:dasherize => false, :root => "rappers"), "rappers[type=?]", "collection" do |rappers|
       assert_select_xml "current_page[type=?]", "integer", "1"
       assert_select_xml "per_page[type=?]", "integer", "5"
-      assert_select_xml "total_entries[type=?]", "integer", "1"
+      assert_select_xml "total_entries[type=?]", "integer", "1337"
       rappers.each do |rapper|
         assert_select_xml "word", "up"
       end
