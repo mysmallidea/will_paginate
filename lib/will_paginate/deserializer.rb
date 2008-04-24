@@ -9,9 +9,8 @@ module WillPaginate
     end
     
     module ClassMethods
-      def paginate(options = {})
-        options[:params] = {} unless options[:params]
-        options[:params].reverse_merge!(:page => [].paginate.current_page, :per_page => [].paginate.per_page)
+      def paginate(*args)
+        options = wp_parse_options(args.pop)
         results = find(:all, options)
         results.is_a?(WillPaginate::Collection) ? results : results.paginate(:page => options[:params][:page], :per_page => options[:params][:per_page])
       end
@@ -26,6 +25,18 @@ module WillPaginate
         else
           instantiate_collection_without_collection(collection, prefix_options)
         end        
+      end
+      
+      def wp_parse_options(options) #:nodoc:
+        raise ArgumentError, 'parameter hash expected' unless options.respond_to? :symbolize_keys
+        options = options.symbolize_keys
+        raise ArgumentError, ':params hash parameter required' unless options.key?(:params) && options[:params].respond_to?(:symbolize_keys)
+        options[:params] = options[:params].symbolize_keys
+        raise ArgumentError, ':params => :page parameter required' unless options[:params].key? :page                      
+
+        options[:params][:per_page] ||= respond_to?(:per_page) ? per_page : [].paginate.per_page        
+        options[:params][:page] ||= 1
+        options
       end
     end        
     
