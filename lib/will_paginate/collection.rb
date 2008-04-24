@@ -143,6 +143,15 @@ module WillPaginate
       result
     end
     
+    # ActiveSupport's Array#to_xml outputs in the form of:
+    #
+    #   <records type="array">...</records>
+    #
+    # A WillPaginate::Collection needs page, per_page, and total_entries,
+    # so we distinguish the class with a special type and those values. This special
+    # type is by ActiveResource, and now looks like:
+    #
+    #   <records type="collection"><current-page>1</current-page><per-page>30</per-page><total-entries>1337</total-entries>...</records>
     def to_xml_with_collection_type(options = {})
       serializeable_collection.to_xml_without_collection_type(options) do |xml|
         xml.tag!(:current_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[current_page.class.name]}, current_page)
@@ -152,7 +161,7 @@ module WillPaginate
     end
     alias_method_chain :to_xml, :collection_type
     
-    def serializeable_collection
+    def serializeable_collection #:nodoc:
       # Ugly hack because to_xml will not yield the XML Builder object when empty?
       empty? ? returning(self.clone) { |c| c.instance_eval {|i| def empty?; false; end } } : self
     end
