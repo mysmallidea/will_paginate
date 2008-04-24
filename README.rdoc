@@ -124,6 +124,7 @@ Use an +ActiveRecord+ paginate finder in the server controller:
     end
     
 Behind the scenes, the XML generated will be something like:
+
     <posts type="collection">
       <current-page>1</current-page>
       <per-page>30</per-page>
@@ -131,6 +132,7 @@ Behind the scenes, the XML generated will be something like:
       ...
     </posts>
 instead of the traditional:
+
     <posts type="array">
       ...
     </posts>
