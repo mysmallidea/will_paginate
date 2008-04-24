@@ -72,7 +72,7 @@ class DeserializerTest < Test::Unit::TestCase
   end
   
   def test_collection_without_per_page_parameter
-    default_per_page = [].paginate.per_page
+    default_per_page = Client::Project.per_page
     
     collection = create(1, default_per_page, 1337) {|pager| pager.replace([{:name => "will_paginate" }]) }
     projects_xml = collection.to_xml(:root => "projects")
@@ -241,7 +241,7 @@ class DeserializerTest < Test::Unit::TestCase
   end
   
   def test_array_without_per_page_parameter
-    default_per_page = [].paginate.per_page
+    default_per_page = Client::Project.per_page
   
     collection = [{:name => "will_paginate" }]
     projects_xml = collection.to_xml(:root => "projects")
