@@ -148,10 +148,15 @@ module WillPaginate
     #   <records type="array">...</records>
     #
     # A WillPaginate::Collection needs page, per_page, and total_entries,
-    # so we distinguish the class with a special type and those values. This special
-    # type is by ActiveResource, and now looks like:
+    # so the class is distinguished by a special type and those values. This special
+    # type is understood by ActiveResource, and looks like:
     #
-    #   <records type="collection"><current-page>1</current-page><per-page>30</per-page><total-entries>1337</total-entries>...</records>
+    #   <records type="collection">
+    #     <current-page>1</current-page>
+    #     <per-page>30</per-page>
+    #     <total-entries>1337</total-entries>
+    #     ...
+    #   </records>
     def to_xml_with_collection_type(options = {})
       serializeable_collection.to_xml_without_collection_type(options) do |xml|
         xml.tag!(:current_page, {:type => ActiveSupport::CoreExtensions::Hash::Conversions::XML_TYPE_NAMES[current_page.class.name]}, current_page)

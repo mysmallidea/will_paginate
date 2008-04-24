@@ -124,9 +124,16 @@ Use an +ActiveRecord+ paginate finder in the server controller:
     end
     
 Behind the scenes, the XML generated will be something like:
-    <posts type="collection"><current-page>1</current-page><per-page>30</per-page><total-entries>1337</total-entries>...</posts>
+    <posts type="collection">
+      <current-page>1</current-page>
+      <per-page>30</per-page>
+      <total-entries>1337</total-entries>
+      ...
+    </posts>
 instead of the traditional:
-    <posts type="array">...</posts>
+    <posts type="array">
+      ...
+    </posts>
     
 And once again, even if your server does not use WillPaginate your client-side call will still fallback to paginating on the complete resultset +Array+.
 
