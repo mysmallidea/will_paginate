@@ -50,6 +50,11 @@ module WillPaginate
     end
     
     def enable_activeresource
+      unless defined?(ActiveResource::Base)
+        $stderr.puts "Can't find ActiveResource.  `gem install activeresource` to correct this."
+        return
+      end
+
       return if ActiveResource::Base.respond_to? :instantiate_collection_with_collection      
       require 'will_paginate/deserializer'
       ActiveResource::Base.class_eval { include Deserializer }
