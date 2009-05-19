@@ -4,7 +4,7 @@ require 'rubygems'
 # gem install redgreen for colored test output
 begin require 'redgreen'; rescue LoadError; end
 
-require 'boot' unless defined?(ActiveRecord)
+require 'boot' unless defined?(ActiveRecord) || defined?(ActiveResource)
 
 class Test::Unit::TestCase
   protected
@@ -24,6 +24,11 @@ class Test::Unit::TestCase
     [result, deprecations]
   ensure
     WillPaginate::Deprecation.behavior = old_behavior
+  end
+  
+  def assert_select_xml(*args, &block)
+    @selected ||= HTML::Document.new(args.shift.to_s, false, true).root.children
+    assert_select(*args, &block)
   end
 end
 

@@ -13,6 +13,7 @@ module WillPaginate
     def enable
       enable_actionpack
       enable_activerecord
+      enable_activeresource
     end
     
     # hooks WillPaginate::ViewHelpers into ActionView::Base
@@ -44,6 +45,17 @@ module WillPaginate
         klass.send :include, Finder::ClassMethods
         klass.class_eval { alias_method_chain :method_missing, :paginate }
       end
+    end
+    
+    def enable_activeresource
+      unless defined?(ActiveResource::Base)
+        $stderr.puts "Can't find ActiveResource.  `gem install activeresource` to correct this."
+        return
+      end
+
+      return if ActiveResource::Base.respond_to? :instantiate_collection_with_collection      
+      require 'will_paginate/deserializer'
+      ActiveResource::Base.class_eval { include Deserializer }
     end
 
     # Enable named_scope, a feature of Rails 2.1, even if you have older Rails
