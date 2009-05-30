@@ -232,6 +232,7 @@ module WillPaginate
       # previous/next buttons
       links.unshift page_link_or_span(@collection.previous_page, 'disabled prev_page', @options[:previous_label])
       links.push    page_link_or_span(@collection.next_page,     'disabled next_page', @options[:next_label])
+      links.push    per_page_selector
       
       html = links.join(@options[:separator])
       @options[:container] ? @template.content_tag(:div, html, html_attributes) : html
@@ -300,6 +301,22 @@ module WillPaginate
       else
         page_span page, text, :class => span_class
       end
+    end
+    
+    def per_page_selector(options={})
+      options = {
+        :per_page_values => [nil,10,30,50,100,250,500,1000],
+        :before => "show",
+        :after => "per page"
+      }.update(options)
+      
+      @template.content_tag(
+        :span, 
+        options[:before] + 
+        @template.select_tag("per_page", @template.options_for_select(options[:per_page_values].collect{|p|[p, p]}, @template.params["per_page"].to_i)) +
+        options[:after],
+        :class => "per_page_selector"
+      )
     end
 
     def page_link(page, text, attributes = {})
