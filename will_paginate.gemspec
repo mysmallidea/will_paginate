@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name    = 'will_paginate'
+  s.name    = 'mysmallidea-will_paginate'
   s.version = '2.3.8'
   s.date    = '2009-03-09'
   
